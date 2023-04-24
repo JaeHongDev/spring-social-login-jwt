@@ -2,8 +2,11 @@ package com.artisan.springsocialloginjwt.service;
 
 
 import com.artisan.springsocialloginjwt.entity.User;
+import com.artisan.springsocialloginjwt.exception.DomainException;
 import com.artisan.springsocialloginjwt.exception.DomainExceptionCode;
+import com.artisan.springsocialloginjwt.payload.request.LoginRequest;
 import com.artisan.springsocialloginjwt.payload.request.SignupRequest;
+import com.artisan.springsocialloginjwt.payload.response.LoginResponse;
 import com.artisan.springsocialloginjwt.payload.response.SignupResponse;
 import com.artisan.springsocialloginjwt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +36,13 @@ public class AuthenticationService {
         var token = tokenService.generateToken(savedUser.getId());
 
         return new SignupResponse(token);
+    }
+
+    public LoginResponse login(LoginRequest loginRequest) {
+        var user = userRepository.findByUserId(loginRequest.id()).orElseThrow(DomainExceptionCode.LOGIN_FAIL::throwError);
+
+        user.comparePassword(loginRequest.password());
+
+        return new LoginResponse(tokenService.generateToken(user.getId()));
     }
 }

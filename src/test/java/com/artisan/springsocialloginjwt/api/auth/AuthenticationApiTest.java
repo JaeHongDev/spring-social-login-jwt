@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 // build.gradle 파일에 다음 의존성을 추가하세요.
 // testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+import com.artisan.springsocialloginjwt.payload.request.SignupRequest;
+import com.artisan.springsocialloginjwt.service.AuthenticationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,21 +31,26 @@ public class AuthenticationApiTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     // 로그인 API 테스트
     @Test
-    public void loginTest() throws Exception {
+    void loginTest() throws Exception {
+
+        //given
+        authenticationService.signup(new SignupRequest("testuser", "password1234", "", ""));
         String requestBody = "{\"id\":\"testuser\",\"password\":\"password1234\"}";
 
+        //then
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.accessToken").isNotEmpty())
                 .andReturn();
 
-        String token = mvcResult.getResponse().getContentAsString();
-        assertThat(token).isNotNull();
     }
 
     // 회원 가입 API 테스트

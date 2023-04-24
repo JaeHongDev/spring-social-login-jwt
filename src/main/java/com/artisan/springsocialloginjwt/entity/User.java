@@ -1,6 +1,7 @@
 package com.artisan.springsocialloginjwt.entity;
 
 
+import com.artisan.springsocialloginjwt.exception.DomainExceptionCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +35,12 @@ public class User {
         this.name = name;
         this.password = password;
         this.email = email;
+    }
+
+    public void comparePassword(String password) {
+        if(!this.password.equals(password)){
+            throw DomainExceptionCode.LOGIN_FAIL.throwError();
+        }
     }
 }
 
