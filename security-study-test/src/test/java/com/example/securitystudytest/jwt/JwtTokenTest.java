@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.oauth2.jwt.BadJwtException;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -81,9 +82,9 @@ public class JwtTokenTest {
     @Test
     void 잘못된_퍼블릭키로_검증(){
         var token = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJhcnRpc2FuIiwic3ViIjoic3ViamVjdCIsImlkIjoxLCJleHAiOjE2ODI1NDA0NDcsImlhdCI6MTY4MjUwNDQ0N30.0efiwdg2bR0S2XdpBtBXbGz8myZDIy7ZLmPJbG7c8sY0VMM43XRBbkMypswUJFB1O1eCCnaksH2pIEwNXkJm_eQmDdFXd2nK25ihCfsl4EXDnhghpSrPwcTASCfCjFctkSZ-QysJKvm0GDeYbSVIJsj9lezKgw0BW2l8WvUhk6Gepi7fhw8cp7rRXyzPgxRDfMOFZnYYzmdHV3a7Nd6E-AKxvI8KwQTfHRXNhGIuEW5gxpaGoyAsgJU19f4qzZqNHLZv5F4OovYAzhmWqz1bF3Ig1CapBZFIO43xxqRY2VQqzhm2jVyOQiyMSTs3tB1hXzBqt9PxLQwNHC6u5Fa60A";
-        //Assertions.assertThatThrownBy(()->{
+        Assertions.assertThatThrownBy(()->{
             var id = (Long) jwtDecoder.decode(token).getClaims().get("id");
             assertThat(id).isEqualTo(1L);
-        //}).isInstanceOf(JwtValidationException.class);
+        }).isInstanceOf(BadJwtException.class);
     }
 }
